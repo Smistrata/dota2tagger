@@ -1,0 +1,16 @@
+{
+
+    "manifest_version": 2,
+    "name": "Dota2Tagger",
+    "version": "1.0",
+  
+    "description": "Tags untagged Dota2 Posts",
+
+    "content_scripts": [
+        {
+          "matches": ["*://www.reddit.com/r/DotA2*"],
+          "js": ["add_tags.js"]
+        }
+    ]
+  
+  }
