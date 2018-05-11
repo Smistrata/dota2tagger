@@ -1,15 +1,13 @@
-async function addFlairs() {
-predictTag("workshop item of tusk", "steam", "");
-document.body.style.border = "5px solid red";   
-console.log("Running!"); 
-let titles = document.getElementsByClassName("title");
+async function addFlairs() { 
+console.log("dota2tagger Running!"); 
+let titles = document.getElementsByClassName("title"); // Get all elements that could have tags
 console.log(`Length: ${titles.length}`);
 for (let element of titles) {
-    if (element.tagName != "P") {
+    if (element.tagName != "P") {  // the "P" elements contains the titles and tags for posts
         continue;
     }
     let inner_html = element.innerHTML;
-    if (!inner_html.includes("linkflairlabel")) { // Add a link flair
+    if (!inner_html.includes("linkflairlabel")) { // Add a link flair if the post doesn't already have one
 
         let title = inner_html.slice(0, inner_html.indexOf("</a>"));
         title = title.slice(title.lastIndexOf(">") + 1);    // Extract the title
@@ -18,7 +16,7 @@ for (let element of titles) {
         url = url.slice(url.lastIndexOf(">") + 1);          // Extract url (domain)
         console.log(url);
 
-        let tag = await predictTag(title, url, "");  // If grab json from reddit, can include body as well
+        let tag = await predictTag(title, url, "");  // I don't currently have a method of passing the body
         let flair = `Predicted | ${tag}`;
         let html_flair = `<span class="linkflairlabel" title="${flair}">${flair}</span>`;
 
@@ -36,6 +34,7 @@ async function predictTag(title, url, body) {
 
     const wrapper_uri = "https://dota2tagger.azurewebsites.net/api/gettag?code=zAARE6Okj1AGYrzyAEtytRHTbvdp0MwVkE0bU8wp7ltDvZJ/tfrEtA==";
     const apiKey = "YaQH0mqSuGumNcI4YYMmZirFFxqT4R+lRZRFQ6MeMmM7lrN9FRhGbUmbGPb7QJrBMJ1iYB4gcRDnH/VhnS8iRQ==";
+    //URI and ApiKey for an azure function that then calls Azure Machine Learning Services (roundabout method required do to CORS restrictions)
     let data = {
         "Inputs": {
           "input1": [
@@ -51,7 +50,6 @@ async function predictTag(title, url, body) {
     }
 
     const options = {
-        // uri: uri,
         method: "POST",
         headers: {
             "Content-Type": "application/json",

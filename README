@@ -1,0 +1,25 @@
+Dota 2 Tagger
+
+This tool is an addon for Google Chrome that attepmts to add tags to posts on http://www.reddit.com/r/Dota2 using a trained classifier.  
+This can be helpful if people do not put tags on posts, but you want to search for certian tags with the "find" functionality in most browsers, 
+or if you jsut want to avoid certian types of posts when browsing.
+
+The files in this repository contain the code/data used for this psroject, but not all are necessary for the actual extensions.
+The actual extension was packaged with just the "extensions_files."  The data files are what was used to train a classifer using Azure Machine Learning Services,
+and other code is various pieces of code used to mine the data off reddit, sort the data into CSV files, and the code used in an Azure function that calls
+the Azure Machine Learning Services.
+
+dota2miner.py is what I used to actually mine the data, and is simply does a search for each tag using Pyhton Reddit Api Wrapper (praw), and then
+stores the posts in CSV files.  Due to reddit removing the ability to search by date, it is very difficult to get large amounts of data,
+and would require repeatedly grabbing new posts to generate a corpus large enough for accurate classification.  Because of this, the classifier
+is not very accurate, but can easily be improved with more data.
+
+In order to make the classifier, I created a simple expirement with Azure Machine Learning Services.  I formatted the data for use with AMLS
+with my "generate_corpus.py" file.  I used AMLS to train a simple neural network with the text data from the posts after removing stop words
+and lemmatization.
+
+For actually tagging the posts, add_tags.js and the azure_function.csx handles everything.  In add_tags.js, all of the HTML elements on the page
+that can contain tags are collected and checked to see if they have tags.  If they don't have tags, a call is made with the title and domain of the post
+to a function that I made in the azure portal that then calls AMLS to try and classify the post.  I couldn't directly call AMLS with javascript 
+because AMLS has no functionality to configure CORS, and my requests were getting rejected so I had to use C# on azure to call it.  After recieving 
+the tag that my classifier thinks the post is, I simply  updated the HTML of the page with the HTML of a new tag that reads "Predicted | (tag name)"

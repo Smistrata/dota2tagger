@@ -2,7 +2,7 @@
 
     "manifest_version": 2,
     "name": "Dota2Tagger",
-    "version": "1.0",
+    "version": "1.02",
   
     "description": "Tags untagged Dota2 Posts",
 
