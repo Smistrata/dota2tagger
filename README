@@ -9,3 +9,7 @@ dota2miner.py is what I used to actually mine the data, and is simply does a sea
 In order to make the classifier, I created a simple expirement with Azure Machine Learning Services.  I formatted the data for use with AMLS with my "generate_corpus.py" file.  I used AMLS to train a simple neural network with the text data from the posts after removing stop words and lemmatization.
 
 For actually tagging the posts, add_tags.js and the azure_function.csx handles everything.  In add_tags.js, all of the HTML elements on the page that can contain tags are collected and checked to see if they have tags.  If they don't have tags, a call is made with the title and domain of the post to a function that I made in the azure portal that then calls AMLS to try and classify the post.  I couldn't directly call AMLS with javascript because AMLS has no functionality to configure CORS, and my requests were getting rejected so I had to use C# on azure to call it.  After recieving the tag that my classifier thinks the post is, I simply  updated the HTML of the page with the HTML of a new tag that reads "Predicted | (tag name)"
+
+Extension can be found in the chrome store with the link:
+
+https://chrome.google.com/webstore/detail/dota2tagger/fdoobaenemmkigkohikplpcgmajmemae?hl=en-US
